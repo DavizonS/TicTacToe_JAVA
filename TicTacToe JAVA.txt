@@ -1,0 +1,121 @@
+import java.util.Scanner;
+
+public class TicTacToe {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Crear una matriz de 3x3 para el tablero
+        char[][] tablero = new char[3][3];
+
+        // Inicializar el tablero con numeros del 1 al 9
+        int valor = 1;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                tablero[i][j] = Character.forDigit(valor++, 10);
+            }
+        }
+
+        // Mostrar el tablero inicial
+        System.out.println("Tablero inicial:");
+        imprimirTablero(tablero);
+
+        char jugadorActual = 'X'; // El jugador 'X' comienza
+
+        // Jugar hasta que haya un ganador o empate
+        while (true) {
+            System.out.println("Turno del jugador " + jugadorActual);
+            System.out.println("Ingrese el numero de la casilla donde desea colocar su marca:");
+            int casilla = scanner.nextInt();
+
+            // Verificar si la casilla esta ocupada o no valida
+            if (casilla < 1 || casilla > 9 || !casillaDisponible(tablero, casilla)) {
+                System.out.println("Casilla no valida, por favor elija otra.");
+                continue;
+            }
+
+            // Colocar la marca del jugador en la casilla seleccionada
+            colocarMarca(tablero, casilla, jugadorActual);
+
+            // Mostrar el tablero actualizado
+            imprimirTablero(tablero);
+
+            // Verificar si hay un ganador o empate
+            if (hayGanador(tablero, jugadorActual)) {
+                System.out.println("El jugador " + jugadorActual + " ha ganado!");
+                break;
+            } else if (tableroLleno(tablero)) {
+                System.out.println("Empate!");
+                break;
+            }
+
+            // Cambiar al siguiente jugador
+            jugadorActual = (jugadorActual == 'X') ? 'O' : 'X';
+        }
+
+        scanner.close();
+    }
+
+    // Metodo para imprimir el tablero en la consola
+    private static void imprimirTablero(char[][] tablero) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(tablero[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    // Metodo para verificar si una casilla esta disponible
+    private static boolean casillaDisponible(char[][] tablero, int casilla) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (tablero[i][j] == Character.forDigit(casilla, 10)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Metodo para colocar la marca del jugador en la casilla seleccionada
+    private static void colocarMarca(char[][] tablero, int casilla, char jugador) {
+        char marca = (jugador == 'X') ? 'X' : 'O';
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (tablero[i][j] == Character.forDigit(casilla, 10)) {
+                    tablero[i][j] = marca;
+                    return;
+                }
+            }
+        }
+    }
+
+    // Metodo para verificar si hay un ganador
+    private static boolean hayGanador(char[][] tablero, char jugador) {
+        // Verificar filas y columnas
+        for (int i = 0; i < 3; i++) {
+            if ((tablero[i][0] == jugador && tablero[i][1] == jugador && tablero[i][2] == jugador) ||
+                (tablero[0][i] == jugador && tablero[1][i] == jugador && tablero[2][i] == jugador)) {
+                return true;
+            }
+        }
+        // Verificar diagonales
+        if ((tablero[0][0] == jugador && tablero[1][1] == jugador && tablero[2][2] == jugador) ||
+            (tablero[0][2] == jugador && tablero[1][1] == jugador && tablero[2][0] == jugador)) {
+            return true;
+        }
+        return false;
+    }
+
+    // Metodo para verificar si el tablero esta lleno (empate)
+    private static boolean tableroLleno(char[][] tablero) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (tablero[i][j] != 'X' && tablero[i][j] != 'O') {
+                    return false; // Todavia hay casillas vacias
+                }
+            }
+        }
+        return true; // El tablero esta lleno
+    }
+}
